@@ -1,0 +1,90 @@
+version: '3'
+services:
+  # Go application service
+  db:
+    container_name: recipedb
+    image: postgres:latest
+    command: -c ssl=disabled 
+    hostname: db
+    environment:
+      GET_HOST_FROM: dns
+      POSTGRES_DB: recipe
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: kaak
+    ports:
+      - "5432:5432"
+    networks:
+      - recipenet
+    volumes:
+    - postgres-db:/var/lib/postgresql/data
+
+  app:
+    container_name: recipeapi
+    hostname: recipeapi
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/go/src/recipeApi
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    networks:
+      - recipenet
+    volumes:
+    - .:/app/recipeApi
+    depends_on:
+      - db
+    links:
+      - db
+      
+networks:
+  recipenet:
+    driver: bridge
+volumes:
+  postgres-db:  # Volume for persisting PostgreSQL data
+
+# version: '3'
+
+# services:
+
+#   db:
+#     container_name: bulletindb
+#     image: postgres
+#     hostname: db
+#     environment:
+#       GET_HOST_FROM: dns
+#       POSTGRES_DB: recipe
+#       POSTGRES_USER: root
+#       POSTGRES_PASSWORD: kaak
+#     ports:
+#       - 5432:5432
+#     networks:
+#       - bulletinnet
+
+#   bulletinapi:
+#     container_name: bulletinapi
+#     image: kisulken/bulletinapi:v1
+#     hostname: bulletinapi
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     environment:
+#       GET_HOSTS_FROM: dns
+#     networks:
+#     - bulletinnet
+#     volumes:
+#     - .:/go/src/bulletinApi
+#     ports:
+#     - 8080:8080
+#     depends_on:
+#     - db
+#     links:
+#     - db
+#     labels:
+#       kompose.service.type: LoadBalancer
+
+# networks:
+#   bulletinnet:
+#     driver: bridge
