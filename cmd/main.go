@@ -18,7 +18,9 @@ func main() {
 
 	dbsource := os.Getenv("DBSOURCE")
 	if dbsource == "" {
-		dbsource = "postgresql://root:kaak@0.0.0.0:5432/recipe?sslmode=disable"
+		// dbsource = "host=localhost port=5432 user=pquser dbname=some_db sslmode=disable"
+		// dbsource = "postgresql://root:kaak@localhost:5432/recipes?sslmode=disable"
+		dbsource = "postgresql://root:kaak@localhost:5432/recipes?ssl=off"
 	}
 
 	conn, err := sql.Open("postgres", dbsource)

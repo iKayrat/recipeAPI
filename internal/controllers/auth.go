@@ -38,7 +38,7 @@ func (s *Server) register(c *fiber.Ctx) error {
 
 	created, err := s.store.CreateUser(c.Context(), arg)
 	if err != nil {
-		if strings.ContainsAny(err.Error(), "unique") {
+		if strings.Contains(err.Error(), "unique") {
 			return c.Status(fiber.StatusInternalServerError).JSON(wrapMessage(msgUserAlreadyExists))
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(wrapMessage(err.Error()))

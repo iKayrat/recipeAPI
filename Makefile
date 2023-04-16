@@ -4,6 +4,9 @@ include .env
 # Export all variables from .env file
 export $(shell sed 's/=.*//' .env)
 
+psql:
+	winpty docker exec -it recipedb psql -U root postgres
+
 createmigrate:
 	# migrate create -ext sql -dir internal/db/migration -seq recipe
 	migrate create -ext sql -dir internal/db/migration -seq user

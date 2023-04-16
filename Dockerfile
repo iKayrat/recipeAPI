@@ -29,4 +29,4 @@ CMD /recipeAPI
 
 CMD ["./recipeAPI"]
 # Set the entry point for the container
-EXPOSE 8080
+EXPOSE 8000

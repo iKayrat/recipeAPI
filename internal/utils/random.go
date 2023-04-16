@@ -16,15 +16,15 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-const Migration = `CREATE TABLE "recipes" (
-	"id" BIGSERIAL PRIMARY KEY,
-	"name" VARCHAR(255) NOT NULL,
-	"description" TEXT NOT NULL,
-	"ingredients" TEXT[] NOT NULL,
-	"steps" JSONB NOT NULL,
-	"total_time" SMALLINT NOT NULL,
-	"created_at" TIMESTAMPTZ NOT NULL DEFAULT (now()),
-	"updated_at" TIMESTAMPTZ NOT NULL DEFAULT (now())
+const Migration = `CREATE TABLE IF NOT EXISTS recipes (
+	id BIGSERIAL PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	description TEXT NOT NULL,
+	ingredients TEXT[] NOT NULL,
+	steps JSONB NOT NULL,
+	total_time SMALLINT NOT NULL,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT (now()),
+	updated_at TIMESTAMPTZ NOT NULL DEFAULT (now())
   );`
 
 func InitPopulation() {
@@ -38,7 +38,9 @@ func InitPopulation() {
 
 	dbsource := os.Getenv("DBSOURCE")
 	if dbsource == "" {
-		dbsource = "postgresql://root:kaak@localhost:5432/recipe?sslmode=disable"
+		dbsource = "host=localhost port=5432 user=root password=kaak dbname=recipes sslmode=enable"
+		// dbsource = "postgres://root:kaak@localhost/recipes?sslmode=disable"
+		// dbsource = "postgresql://root:kaak@0.0.0.0:5432/recipes?sslmode=disable"
 	}
 
 	conn, err := sql.Open("postgres", dbsource)

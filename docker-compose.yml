@@ -3,40 +3,46 @@ services:
   # Go application service
   db:
     container_name: recipedb
-    image: postgres:latest
-    command: -c ssl=disabled 
-    hostname: db
+    image: postgres:alpine
+    network_mode: bridge
+    # command: 
+    # hostname: db
     environment:
-      GET_HOST_FROM: dns
-      POSTGRES_DB: recipe
+      POSTGRES_DB: recipes
       POSTGRES_USER: root
       POSTGRES_PASSWORD: kaak
     ports:
-      - "5432:5432"
+      - '5432:5432'
     networks:
       - recipenet
-    volumes:
-    - postgres-db:/var/lib/postgresql/data
+    volumes: 
+      # - ./postgres-data:/var/lib/postgresql/data 
+      - ./internal/db/migration/000001_recipe.up.sql:/docker-entrypoint-initdb.d/000001_recipe.up.sql
+      - ./internal/db/migration/000002_user.up.sql:/docker-entrypoint-initdb.d/000002_user.up.sql
+    # volumes: 
+      # - db:/var/lib/postgresql/data
+      # - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
 
   app:
     container_name: recipeapi
+    network_mode: bridge
     hostname: recipeapi
     build: .
     env_file:
       - .env
-    volumes:
-      - .:/go/src/recipeApi
+    # volumes:
+    #   - .:/go/src/recipeApi
     ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
+      - 8000:8000
+    # volumes:
+    #   - .:/app
     networks:
       - recipenet
-    volumes:
-    - .:/app/recipeApi
+    # volumes:
+    # - .:/app/recipeApi
     depends_on:
       - db
-    links:
+    links:    
       - db
       
 networks:
