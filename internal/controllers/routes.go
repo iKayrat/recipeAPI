@@ -134,7 +134,8 @@ func (s *Server) getRecipesByIngredients(c *fiber.Ctx) error {
 		// check if recipes inlude ingredients
 		for _, v := range recipe.Ingredients {
 			for _, i := range ingredientList {
-				if strings.Contains(v, i) {
+				ingrd := strings.ToLower(v)
+				if strings.Contains(ingrd, i) {
 					filteredRecipes = append(filteredRecipes, recipe)
 				}
 			}

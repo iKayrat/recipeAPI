@@ -1,27 +1,30 @@
-# Load environment variables from .env file
-include .env
+# # Load environment variables from .env file
+# include .env
 
-# Export all variables from .env file
-export $(shell sed 's/=.*//' .env)
+# # Export all variables from .env file
+# export $(shell sed 's/=.*//' .env)
 
 psql:
-	winpty docker exec -it recipedb psql -U root postgres
+	docker exec -it db psql -U root recipe
 
 createmigrate:
 	# migrate create -ext sql -dir internal/db/migration -seq recipe
-	migrate create -ext sql -dir internal/db/migration -seq user
+	# migrate create -ext sql -dir internal/db/migration -seq user
 
 sqlc:
 	sqlc generate
 
 create:
-	docker exec -it recipedb createdb --username=root --owner=root recipe
+	docker exec -it db createdb --username=root --owner=root recipe
 
 drop:
-	docker exec -it telegramdb dropdb --username=root recipe
+	docker exec -it db dropdb --username=root recipe
 
 migrateup:
-	migrate -path internal/db/migration -database "postgresql://root:kaak@localhost:5432/recipe?sslmode=disable" -verbose up
+	migrate -path internal/db/migration -database $(DB_URL) -verbose up
 
 run:
-	go run cmd/main.go
+	docker-compose up
+
+stop:
+	docker-compose down

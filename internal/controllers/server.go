@@ -22,13 +22,13 @@ func New(dbconn db.Store, app *fiber.App) *Server {
 	// checks for authenticated users
 	app.Use(middleware.IsAuthenticated)
 
-	app.Post("/recipe", s.createRecipe)
+	app.Post("/recipes", s.createRecipe)
 	app.Get("/recipes/id/:id", s.getRecipe)
 	app.Get("/recipes/all", s.getAllRecipes)
 	app.Get("/recipes/", s.getRecipesByIngredients)
 	app.Get("/recipes/time/", s.getRecipesByTotaltime)
-	app.Put("/recipe/:id", s.updateRecipe)
-	app.Delete("/recipe/:id", s.deleteRecipe)
+	app.Put("/recipes/:id", s.updateRecipe)
+	app.Delete("/recipes/:id", s.deleteRecipe)
 
 	app.Post("/logout", s.logout)
 	app.Get("/users", s.getUsers)

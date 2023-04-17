@@ -2,95 +2,37 @@ version: '3'
 services:
   # Go application service
   db:
-    container_name: recipedb
+    container_name: db
     image: postgres:alpine
-    network_mode: bridge
-    # command: 
-    # hostname: db
     environment:
-      POSTGRES_DB: recipes
+      POSTGRES_DB: recipe
       POSTGRES_USER: root
       POSTGRES_PASSWORD: kaak
     ports:
-      - '5432:5432'
+    - 5432:5432
     networks:
       - recipenet
     volumes: 
-      # - ./postgres-data:/var/lib/postgresql/data 
       - ./internal/db/migration/000001_recipe.up.sql:/docker-entrypoint-initdb.d/000001_recipe.up.sql
       - ./internal/db/migration/000002_user.up.sql:/docker-entrypoint-initdb.d/000002_user.up.sql
-    # volumes: 
-      # - db:/var/lib/postgresql/data
-      # - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
-
+      - ./internal/db/migration/recipes_202304170548.sql:/docker-entrypoint-initdb.d/recipes_202304170548.sql
+      - ./internal/db/migration/users_202304170552.sql:/docker-entrypoint-initdb.d/users_202304170552.sql
   app:
-    container_name: recipeapi
-    network_mode: bridge
-    hostname: recipeapi
+    container_name: app
     build: .
     env_file:
       - .env
-    # volumes:
-    #   - .:/go/src/recipeApi
     ports:
       - 8000:8000
-    # volumes:
-    #   - .:/app
     networks:
       - recipenet
-    # volumes:
-    # - .:/app/recipeApi
     depends_on:
       - db
-    links:    
+    links:
       - db
       
 networks:
   recipenet:
     driver: bridge
 volumes:
-  postgres-db:  # Volume for persisting PostgreSQL data
-
-# version: '3'
-
-# services:
-
-#   db:
-#     container_name: bulletindb
-#     image: postgres
-#     hostname: db
-#     environment:
-#       GET_HOST_FROM: dns
-#       POSTGRES_DB: recipe
-#       POSTGRES_USER: root
-#       POSTGRES_PASSWORD: kaak
-#     ports:
-#       - 5432:5432
-#     networks:
-#       - bulletinnet
-
-#   bulletinapi:
-#     container_name: bulletinapi
-#     image: kisulken/bulletinapi:v1
-#     hostname: bulletinapi
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     environment:
-#       GET_HOSTS_FROM: dns
-#     networks:
-#     - bulletinnet
-#     volumes:
-#     - .:/go/src/bulletinApi
-#     ports:
-#     - 8080:8080
-#     depends_on:
-#     - db
-#     links:
-#     - db
-#     labels:
-#       kompose.service.type: LoadBalancer
-
-# networks:
-#   bulletinnet:
-#     driver: bridge
+  postgres-db:
