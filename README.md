@@ -1,4 +1,4 @@
-# Рецепт приложения REST API с Golang и PostgreSQL с использованием Docker
+# РецептAPI - приложение REST API с Golang и PostgreSQL с использованием Docker
 
 Это пример REST API приложения рецепта, написан на Golang и PostgreSQL, и его можно легко настроить и запустить с помощью Docker Compose для легкой разработки и развертывания.
 
